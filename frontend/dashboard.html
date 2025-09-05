@@ -133,8 +133,8 @@
   function api(endpoint) {
     const site = localStorage.getItem("site"); 
     const baseUrls = {
-      teling: "https://api.example.com/teling/",
-      paniki: "https://api.example.com/paniki/"
+    teling: "http://localhost:3000/api/teling/",
+    paniki: "http://localhost:3000/api/paniki/"
     };
     const baseUrl = baseUrls[site] || "https://api.example.com/default/";
     return baseUrl + endpoint;
@@ -150,6 +150,24 @@
   }
 
   // === PUE Donut Chart ===
+    const ctxSunburst = document.getElementById('sunburstChart').getContext('2d');
+    const pueChart = new Chart(ctxSunburst, {
+      type: 'doughnut',
+      data: {
+        labels: ['PUE', 'Sisa'],
+        datasets: [{
+          data: [0, 4], 
+          backgroundColor: ['#008000', '#e0e0e0']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
   async function updatePUE() {
     try {
       const response = await fetch(api('last-cache-pue'));
@@ -168,6 +186,20 @@
   }
 
   // === PUE Line Chart ===
+  const ctxLine = document.getElementById('lineChart').getContext('2d');
+  const chart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'PUE',
+        data: [],
+        borderColor: '#36a2eb',
+        fill: false
+      }]
+    }
+  });
+
   async function fetchDataAndUpdateChartPUE() {
     try {
       const response = await fetch(api('all-pue'));
@@ -183,6 +215,19 @@
   }
 
   // === PLN Load Line Chart ===
+  const ctxLoad = document.getElementById('plnLineChart').getContext('2d');
+  const chartLOAD = new Chart(ctxLoad, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'PLN', data: [], borderColor: 'red' },
+        { label: 'Facility', data: [], borderColor: 'blue' },
+        { label: 'IT', data: [], borderColor: 'green' }
+      ]
+    }
+  });
+
   function fetchDataAndUpdateLineLoad() {
     fetch(api('all-pue'))
       .then(r => r.json())
@@ -197,6 +242,19 @@
   }
 
   // === BBM Chart ===
+  const ctxBBM = document.getElementById('bbmChart').getContext('2d');
+  const bbmChart = new Chart(ctxBBM, {
+    type: 'bar',
+    data: {
+      labels: ['Tank Harian 1', 'Tank Bulanan', 'Tank Harian 2'],
+      datasets: [{
+        label: 'BBM',
+        data: [0,0,0],
+        backgroundColor: ['orange','purple','cyan']
+      }]
+    }
+  });
+  
   async function updateChartBBM() {
     try {
       const response = await fetch(api('bbm'));
